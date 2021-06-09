@@ -1,0 +1,13 @@
+de\Jannify\Screen\Screen.class
+de\Jannify\Screen\ExitScreen.class
+de\Jannify\IO\Config.class
+de\Jannify\Sensors\NovaPMSensor.class
+de\Jannify\Screen\SensorValueScreen.class
+de\Jannify\IO\FileIO.class
+de\Jannify\Main.class
+de\Jannify\Screen\OptionsScreen.class
+de\Jannify\Screen\ScreenController.class
+de\Jannify\Sensors\SensorMeasuring.class
+de\Jannify\Sensors\SensorValue.class
+de\Jannify\Screen\SelectorScreen.class
+de\Jannify\Sensors\GroveBridge.class
