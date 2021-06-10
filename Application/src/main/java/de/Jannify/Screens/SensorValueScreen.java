@@ -1,11 +1,11 @@
-package de.Jannify.Screen;
+package de.Jannify.Screens;
 
 import de.Jannify.IO.Config;
 import de.Jannify.Main;
-import de.Jannify.Sensors.GroveBridge;
 import de.Jannify.Sensors.SensorMeasuring;
 import de.Jannify.Sensors.SensorValue;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
@@ -17,14 +17,12 @@ public class SensorValueScreen implements Screen {
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     private final DecimalFormat df = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(Locale.GERMANY));
     private final SensorMeasuring sensorMeasuring;
-    private final GroveBridge groveBridge;
 
     private boolean firstTime = true;
     private int lcdPage;
 
     public SensorValueScreen() {
         sensorMeasuring = Main.sensorMeasuring;
-        groveBridge = Main.grove;
         lcdPage = 0;
     }
 
@@ -37,19 +35,19 @@ public class SensorValueScreen implements Screen {
         try {
             if (Config.ValueDisplayOn) {
                 if (firstTime) {
-                    groveBridge.setLcdColor(Config.getColorR(), Config.getColorG(), Config.getColorB());
+                    ScreenController.setLcdColor(Config.getColor());
                 }
 
-                SensorValue sensorValue = sensorMeasuring.getCurrent();
+                SensorValue sensorValue = sensorMeasuring.getCurrentValue();
                 switch (lcdPage) {
                     case 0:
-                        groveBridge.setLcdText(MessageFormat.format("Zeit: {0}\nCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
+                        ScreenController.setLcdText(MessageFormat.format("Zeit: {0}\nCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
                         break;
                     case 1:
-                        groveBridge.setLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));
+                        ScreenController.setLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));
                         break;
                     case 2:
-                        groveBridge.setLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", sensorValue.PM2, sensorValue.PM10));
+                        ScreenController.setLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", sensorValue.PM2, sensorValue.PM10));
                         break;
                     default:
                         lcdPage = -1;
@@ -57,8 +55,8 @@ public class SensorValueScreen implements Screen {
                 }
                 lcdPage++;
             } else if (firstTime) {
-                groveBridge.setLcdText("");
-                groveBridge.setLcdColor(0, 0, 0);
+                ScreenController.setLcdText("");
+                ScreenController.setLcdColor(Color.BLACK);
             }
             firstTime = false;
 

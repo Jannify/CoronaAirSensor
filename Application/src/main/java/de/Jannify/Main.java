@@ -1,9 +1,8 @@
 package de.Jannify;
 
 import de.Jannify.IO.Config;
-import de.Jannify.Screen.ScreenController;
-import de.Jannify.Sensors.GroveBridge;
-import de.Jannify.Sensors.NovaPMSensor;
+import de.Jannify.Screens.ScreenController;
+import de.Jannify.Sensors.SensorInterface;
 import de.Jannify.Sensors.SensorMeasuring;
 import org.iot.raspberry.grovepi.pi4j.GroveGasSensorPi4J;
 
@@ -11,41 +10,46 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
-    public static Logger logger = Logger.getLogger("CoronaAirSensor");
-    public static NovaPMSensor novaPMSensor = new NovaPMSensor();
-    public static GroveBridge grove = new GroveBridge();
-    public static SensorMeasuring sensorMeasuring = new SensorMeasuring();
-    public static ScreenController screenController = new ScreenController();
+    public static Logger logger;
+    public static SensorInterface sensorInterface;
+    public static SensorMeasuring sensorMeasuring;
+    public static ScreenController screenController;
 
     public static void main(String[] args) {
+        setupLogger();
+        logger.info("Starting CoronaAirSensor");
+        Config.readConfig();
+
+        sensorInterface = new SensorInterface();
+        sensorInterface.start();
+        sensorInterface.setLcdColor(Config.getColor());
+        sensorInterface.setCO2Mode(GroveGasSensorPi4J.MODE_10S);
+
+        sensorMeasuring = new SensorMeasuring();
+        sensorMeasuring.start();
+
+        screenController = new ScreenController();
+        screenController.start();
+        logger.info("CoronaAirSensor is running");
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Stopping CoronaAirSensor");
+            sensorInterface.interrupt();
+            sensorMeasuring.interrupt();
+            screenController.interrupt();
+
+            sensorInterface.close();
+
+            Config.saveConfig();
+            logger.info("CoronaAirSensor was stopped");
+        }));
+    }
+
+    private static void setupLogger() {
+        logger = Logger.getLogger("CoronaAirSensor");
         Logger.getLogger("GrovePi").setLevel(Level.WARNING);
         Logger.getLogger("RaspberryPi").setLevel(Level.WARNING);
         Logger.getLogger("org.iot.raspberry.grovepi.pi4j").setLevel(Level.WARNING);
         Logger.getLogger("org.iot.raspberry.grovepi.pi4j.IO").setLevel(Level.WARNING);
-        System.out.println("Starting CoronaAirSensor");
-
-        Config.readConfig();
-        novaPMSensor.open();
-        grove.start();
-        grove.setLcdColor(Config.getColorR(), Config.getColorG(), Config.getColorB());
-        grove.setCO2Mode(GroveGasSensorPi4J.MODE_10S);
-
-        Thread groveThread = new Thread(grove);
-        groveThread.start();
-
-        Thread measuringThread = new Thread(sensorMeasuring);
-        measuringThread.start();
-
-        Thread screenThread = new Thread(screenController);
-        screenThread.start();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            sensorMeasuring.close();
-            measuringThread.interrupt();
-            screenThread.interrupt();
-            grove.shutdown();
-            novaPMSensor.close();
-            Config.saveConfig();
-        }));
     }
 }

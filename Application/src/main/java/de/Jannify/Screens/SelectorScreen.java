@@ -1,19 +1,16 @@
-package de.Jannify.Screen;
+package de.Jannify.Screens;
 
 import de.Jannify.Main;
-import de.Jannify.Sensors.GroveBridge;
 
 public class SelectorScreen implements Screen {
-    private final GroveBridge groveBridge;
     private final double potentialPerScreen;
-    private final int screenLenght;
+    private final int screenLength;
 
     private int selectedScreen = -1;
 
-    public SelectorScreen(int screenLenght) {
-        groveBridge = Main.grove;
-        this.screenLenght = screenLenght;
-        potentialPerScreen = 1.0 / screenLenght;
+    public SelectorScreen(int screenLength) {
+        this.screenLength = screenLength;
+        potentialPerScreen = 1.0 / screenLength;
     }
 
     @Override public String getName() {
@@ -22,9 +19,9 @@ public class SelectorScreen implements Screen {
 
     @Override
     public void execute(ScreenController controller, Object monitor) {
-        int newSelected = (int) (groveBridge.getRotation() / potentialPerScreen);
-        if (newSelected > screenLenght- 1) {
-            newSelected = screenLenght - 1;
+        int newSelected = (int) (ScreenController.getRotationFactor() / potentialPerScreen);
+        if (newSelected > screenLength - 1) {
+            newSelected = screenLength - 1;
         } else if (newSelected < 0) {
             newSelected = 0;
         }
@@ -33,11 +30,11 @@ public class SelectorScreen implements Screen {
             selectedScreen = newSelected;
 
             String text = controller.screens[selectedScreen].getName();
-            if (selectedScreen + 1 < screenLenght) {
+            if (selectedScreen + 1 < screenLength) {
                 text += "\n" + controller.screens[selectedScreen + 1].getName();
             }
 
-            groveBridge.setLcdText("->" + text);
+            ScreenController.setLcdText("->" + text);
         }
 
         try {

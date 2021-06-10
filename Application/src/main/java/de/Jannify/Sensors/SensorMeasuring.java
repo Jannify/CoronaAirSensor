@@ -1,116 +1,119 @@
 package de.Jannify.Sensors;
 
 import de.Jannify.IO.Config;
-import de.Jannify.IO.FileIO;
 import de.Jannify.Main;
-import org.iot.raspberry.grovepi.devices.GroveTemperatureAndHumidityValue;
+import org.apache.commons.io.FileUtils;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
-public class SensorMeasuring implements Runnable, Closeable {
+public class SensorMeasuring extends Thread {
     private static final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("'['yyyy-MM-dd'] ['HH-mm']'");
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private static final DecimalFormat decimalFormatter = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(Locale.GERMANY));
-    private final Object monitor = new Object();
-    private final Object monitor2 = new Object();
 
-    private GroveBridge groveBridge;
-    private NovaPMSensor novaPMSensor;
-    private ExecutorService syncData;
-    private ExecutorService saveData;
-    private int timeSync;
-    private int timeSave;
-
+    private static LocalDateTime startTime;
     private SensorValue currentValue = new SensorValue();
-    private final List<SensorValue> valuesPerMinute = new ArrayList<>();
-    private int elapsedMinutes;
+    private final List<SensorValue> valuesPerSave = new ArrayList<>();
+    private int elapsedMinutes = 0;
 
     @Override
     public void run() {
-        groveBridge = Main.grove;
-        novaPMSensor = Main.novaPMSensor;
-        timeSync = Config.getTimeSync() * 1000;
-        timeSave = Config.getTimeSave() * 1000;
+        startTime = LocalDateTime.now();
+        int timeSync = Config.getTimeSync();
+        int factorToSave = Config.getTimeSave() / Config.getTimeSync();
 
-        File database = new File(Config.getPath() + "/" + fileNameFormatter.format(LocalDateTime.now()) + ".csv");
-        if (!database.exists()) {
+        File file = new File(Config.getPath() + "/" + fileNameFormatter.format(LocalDateTime.now()) + ".csv");
+        if (!file.exists()) {
             try {
                 //noinspection ResultOfMethodCallIgnored
-                database.createNewFile();
+                file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        FileIO.setFile(database);
 
-        syncData = Executors.newSingleThreadExecutor();
-        syncData.execute(this::syncData);
+        while (isAlive()) {
+            synchronized (this) {
+                for (int i = 0; i < factorToSave; i++) {
+                    syncData();
 
-        saveData = Executors.newSingleThreadExecutor();
-        saveData.execute(this::saveData);
-    }
-
-
-    @Override
-    public void close() {
-        syncData.shutdown();
-        saveData.shutdown();
-    }
-
-    public SensorValue getCurrent() {
-        return currentValue;
-    }
-
-    public void syncData() {
-        while (!syncData.isShutdown()) {
-            synchronized (monitor) {
-                try {
-                    GroveTemperatureAndHumidityValue value = groveBridge.getTemperatureAndHumidity();
-                    currentValue = new SensorValue(value.getTemperature(), value.getHumidity(), novaPMSensor.getPM2(), novaPMSensor.getPM10(), groveBridge.getCO2());
-                    valuesPerMinute.add(currentValue);
-
-                    monitor.wait(timeSync);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
+                    try {
+                        this.wait(timeSync);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                saveData(file);
             }
         }
     }
 
-    public void saveData() {
-        while (!syncData.isShutdown()) {
-            synchronized (monitor2) {
-                try {
-                    monitor2.wait(timeSave);
+    public SensorValue getCurrentValue() {
+        return currentValue;
+    }
 
-                    String time = "";
-                    if (elapsedMinutes % 10 == 0) {
-                        time = String.valueOf(elapsedMinutes);
-                    }
-                    SensorValue average = SensorValue.getAverage(valuesPerMinute);
+    private void syncData() {
+        currentValue = new SensorValue(
+                SensorInterface.getTemperature(),
+                SensorInterface.getHumidity(),
+                SensorInterface.getPM2(),
+                SensorInterface.getPM10(),
+                SensorInterface.getCO2());
+        valuesPerSave.add(currentValue);
+    }
 
-                    Thread io = new Thread(new FileIO(MessageFormat.format("{0};{1};{2};{3};{4};{5};{6}\n",
-                            time, decimalFormatter.format(average.temperature), decimalFormatter.format(average.humidity), average.PM2,
-                            average.PM10, decimalFormatter.format(average.CO2/100.0), timeFormatter.format(LocalDateTime.now()))));
-                    io.start();
-                    valuesPerMinute.clear();
-                    elapsedMinutes += 1;
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+    private void saveData(File file) {
+        SensorValue average = SensorValue.getAverage(valuesPerSave);
+
+        int tmpMinutes = (int) startTime.until( LocalDateTime.now(), ChronoUnit.MINUTES );
+        String timeInSteps = "";
+        if (tmpMinutes - elapsedMinutes >= 10) {
+            elapsedMinutes = tmpMinutes;
+            timeInSteps = String.valueOf(elapsedMinutes);
+        }
+
+        appendTextToFile(file, MessageFormat.format("{0};{1};{2};{3};{4};{5};{6}\n",
+                timeInSteps, decimalFormatter.format(average.temperature), decimalFormatter.format(average.humidity), average.PM2,
+                average.PM10, decimalFormatter.format(average.CO2 / 100.0), timeFormatter.format(LocalDateTime.now())));
+
+        valuesPerSave.clear();
+    }
+
+    public void appendTextToFile(File file, String text) {
+        try {
+            FileChannel channel = new RandomAccessFile(file, "rw").getChannel();
+            FileLock lock = null;
+            try {
+                lock = channel.tryLock();
+            } catch (OverlappingFileLockException e) {
+                Main.logger.log(Level.SEVERE, "Could not acquire lock on" + file.getPath() );
             }
+
+            FileUtils.writeStringToFile(file, text, Charset.defaultCharset(), true);
+
+            if( lock != null ) {
+                lock.release();
+            }
+
+            channel.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

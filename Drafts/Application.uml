@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>D:/GameDevZone/InteliiJ/Schule/CoronaAirSensor/Application</OriginalElement>
+  <nodes>
+    <node x="1324.647638326586" y="438.981578947368">de.Jannify.Sensors.Nova.NovaPMValue</node>
+    <node x="383.6641025641027" y="824.4605263157897">de.Jannify.Sensors.SensorValue</node>
+    <node x="560.2368421052631" y="399.88026315789466">de.Jannify.Screens.SelectorScreen</node>
+    <node x="204.58421052631604" y="484.2802631578947">de.Jannify.Screens.Screen</node>
+    <node x="560.2368421052631" y="566.086842105263">de.Jannify.Screens.OptionsScreen</node>
+    <node x="897.9105263157892" y="399.88026315789466">de.Jannify.Screens.ExitScreen</node>
+    <node x="88.87894736842114" y="912.4605263157895">de.Jannify.Screens.ScreenController</node>
+    <node x="897.9105263157892" y="566.086842105263">de.Jannify.Screens.SensorValueScreen</node>
+    <node x="1295.147638326586" y="607.378947368421">de.Jannify.Sensors.Nova.NovaPMSensor</node>
+    <node x="1085.147638326586" y="798.776315789474">de.Jannify.Sensors.SensorInterface</node>
+    <node x="704.5900809716602" y="1096.5973684210526">de.Jannify.Main</node>
+    <node x="1578.0318488529017" y="177.94210526315794">de.Jannify.IO.Config</node>
+    <node x="759.9058704453444" y="824.4605263157897">de.Jannify.Sensors.SensorMeasuring</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="de.Jannify.Screens.SensorValueScreen" target="de.Jannify.Screens.Screen" relationship="REALIZATION">
+      <point x="-63.25" y="-50.5" />
+      <point x="961.1605263157892" y="585.133427402286" />
+      <point x="1024.410526315789" y="585.133427402286" />
+      <point x="1024.410526315789" y="542.1026315789472" />
+      <point x="423.97192982456164" y="542.1026315789472" />
+      <point x="423.97192982456164" y="521.6384242274587" />
+      <point x="246.75087719298273" y="521.6384242274587" />
+      <point x="-84.33333333333331" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Sensors.Nova.NovaPMSensor" target="de.Jannify.Sensors.Nova.NovaPMValue" relationship="DEPENDENCY">
+      <point x="0.0" y="-50.5" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="de.Jannify.Sensors.SensorMeasuring" target="de.Jannify.Sensors.SensorValue" relationship="DEPENDENCY">
+      <point x="-77.0" y="-72.5" />
+      <point x="830.6105263157893" y="824.4605263157897" />
+      <point x="830.6105263157893" y="745.7736842105264" />
+      <point x="595.4272604588396" y="745.7736842105264" />
+      <point x="595.4272604588396" y="830.6289473684212" />
+      <point x="454.1641025641027" y="830.6289473684212" />
+      <point x="-70.5" y="28.0" />
+    </edge>
+    <edge source="de.Jannify.Screens.SensorValueScreen" target="de.Jannify.Sensors.SensorMeasuring" relationship="TO_ONE">
+      <point x="63.25" y="-50.5" />
+      <point x="1087.6605263157892" y="593.1052631578947" />
+      <point x="1024.4105263157892" y="593.1052631578947" />
+      <point x="1024.4105263157892" y="745.7736842105264" />
+      <point x="928.4184210526313" y="745.7736842105264" />
+      <point x="928.4184210526313" y="824.4605263157897" />
+      <point x="875.4058704453444" y="824.4605263157897" />
+      <point x="0.0" y="72.5" />
+    </edge>
+    <edge source="de.Jannify.Main" target="de.Jannify.Screens.ScreenController" relationship="TO_ONE">
+      <point x="0.0" y="-39.0" />
+      <point x="719.7052631578947" y="1096.5973684210526" />
+      <point x="719.7052631578947" y="1033.028947368421" />
+      <point x="342.0108299595143" y="1033.028947368421" />
+      <point x="342.0108299595143" y="855.6105263157895" />
+      <point x="204.87894736842114" y="855.6105263157895" />
+      <point x="0.0" y="105.5" />
+    </edge>
+    <edge source="de.Jannify.Main" target="de.Jannify.Sensors.SensorInterface" relationship="TO_ONE">
+      <point x="49.666666666666686" y="-39.0" />
+      <point x="828.7567476383269" y="1047.4973684210524" />
+      <point x="976.1254048582998" y="1047.4973684210524" />
+      <point x="976.1254048582998" y="1134.278947368421" />
+      <point x="1292.147638326586" y="1134.278947368421" />
+      <point x="0.0" y="149.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.ScreenController" target="de.Jannify.Screens.Screen" relationship="TO_MANY">
+      <point x="29.0" y="-105.5" />
+      <point x="233.87894736842114" y="922.8807958233386" />
+      <point x="204.87894736842114" y="922.8807958233386" />
+      <point x="204.87894736842114" y="714.3263157894737" />
+      <point x="331.08421052631604" y="714.3263157894737" />
+      <point x="331.08421052631604" y="533.1835526315789" />
+      <point x="415.4175438596493" y="533.1835526315789" />
+      <point x="84.33333333333326" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Sensors.SensorMeasuring" target="de.Jannify.Sensors.SensorValue" relationship="TO_MANY">
+      <point x="77.0" y="-72.5" />
+      <point x="830.6105263157893" y="824.4605263157897" />
+      <point x="830.6105263157893" y="745.7736842105264" />
+      <point x="595.1641025641027" y="745.7736842105264" />
+      <point x="70.5" y="28.0" />
+    </edge>
+    <edge source="de.Jannify.Sensors.SensorMeasuring" target="de.Jannify.Sensors.SensorValue" relationship="TO_ONE">
+      <point x="0.0" y="-72.5" />
+      <point x="830.6105263157893" y="824.4605263157897" />
+      <point x="830.6105263157893" y="745.7736842105264" />
+      <point x="595.1641025641027" y="745.7736842105264" />
+      <point x="70.5" y="28.0" />
+    </edge>
+    <edge source="de.Jannify.Screens.ScreenController" target="de.Jannify.Sensors.SensorInterface" relationship="TO_ONE">
+      <point x="87.0" y="-105.5" />
+      <point x="291.8789473684211" y="1213.8842105263157" />
+      <point x="1292.147638326586" y="1213.8842105263157" />
+      <point x="0.0" y="149.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.ScreenController" target="de.Jannify.Screens.Screen" relationship="TO_ONE">
+      <point x="-29.0" y="-105.5" />
+      <point x="204.87894736842114" y="912.4605263157895" />
+      <point x="204.87894736842114" y="714.3263157894737" />
+      <point x="331.08421052631604" y="714.3263157894737" />
+      <point x="331.08421052631604" y="533.1835526315789" />
+      <point x="415.4175438596493" y="533.1835526315789" />
+      <point x="84.33333333333326" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.SelectorScreen" target="de.Jannify.Screens.Screen" relationship="REALIZATION">
+      <point x="0.0" y="-50.5" />
+      <point x="686.7368421052631" y="542.1026315789472" />
+      <point x="410.1263157894737" y="542.1026315789472" />
+      <point x="410.1263157894737" y="585.2802631578948" />
+      <point x="-84.33333333333331" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Main" target="de.Jannify.Sensors.SensorMeasuring" relationship="TO_ONE">
+      <point x="-49.666666666666686" y="-39.0" />
+      <point x="779.0900809716602" y="1096.5973684210526" />
+      <point x="779.0900809716602" y="997.6315789473683" />
+      <point x="875.4058704453444" y="997.6315789473683" />
+      <point x="0.0" y="72.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.ScreenController" target="de.Jannify.Screens.Screen" relationship="DEPENDENCY">
+      <point x="-87.0" y="-105.5" />
+      <point x="117.87894736842114" y="946.2631578947368" />
+      <point x="204.87894736842114" y="946.2631578947368" />
+      <point x="204.87894736842114" y="712.9125" />
+      <point x="331.08421052631604" y="712.9125" />
+      <point x="0.0" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.ExitScreen" target="de.Jannify.Screens.Screen" relationship="REALIZATION">
+      <point x="0.0" y="-50.5" />
+      <point x="1024.4105263157892" y="542.1026315789472" />
+      <point x="246.75087719298273" y="542.1026315789472" />
+      <point x="-84.33333333333331" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Sensors.SensorInterface" target="de.Jannify.Sensors.Nova.NovaPMSensor" relationship="TO_ONE">
+      <point x="0.0" y="-149.5" />
+      <point x="1292.147638326586" y="753.5776315789475" />
+      <point x="1397.147638326586" y="753.5776315789475" />
+      <point x="0.0" y="50.5" />
+    </edge>
+    <edge source="de.Jannify.Screens.OptionsScreen" target="de.Jannify.Screens.Screen" relationship="REALIZATION">
+      <point x="0.0" y="-50.5" />
+      <point x="686.7368421052631" y="542.1026315789472" />
+      <point x="470.20350877193005" y="542.1026315789472" />
+      <point x="470.20350877193005" y="543.1201069078948" />
+      <point x="246.75087719298273" y="543.1201069078948" />
+      <point x="-84.33333333333331" y="50.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.778688524590164" showDependencies="true" x="802.9999999999999" y="717.6736842105263" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

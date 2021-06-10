@@ -1,16 +1,9 @@
-package de.Jannify.Screen;
+package de.Jannify.Screens;
 
 import de.Jannify.Main;
-import de.Jannify.Sensors.GroveBridge;
 
 public class ExitScreen implements Screen {
-    private final GroveBridge groveBridge;
-
     private double time = 3;
-
-    public ExitScreen() {
-        groveBridge = Main.grove;
-    }
 
     @Override public String getName() {
         return "Herunterfahren";
@@ -19,7 +12,7 @@ public class ExitScreen implements Screen {
     @Override
     public void execute(ScreenController controller, Object monitor) {
         try {
-            groveBridge.setLcdText("Abbrechen? \n" + String.format("%.1f", time) + " Sekunden");
+            Main.sensorInterface.setLcdText("Abbrechen? \n" + String.format("%.1f", time) + " Sekunden");
 
             if (time < 0) {
                 System.exit(202);

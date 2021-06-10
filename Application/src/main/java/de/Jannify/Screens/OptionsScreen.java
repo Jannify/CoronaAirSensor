@@ -1,19 +1,15 @@
-package de.Jannify.Screen;
+package de.Jannify.Screens;
 
 import de.Jannify.IO.Config;
 import de.Jannify.Main;
-import de.Jannify.Sensors.GroveBridge;
 
 public class OptionsScreen implements Screen {
-    private final GroveBridge groveBridge;
-
     private final String[] optionEntries = new String[] {"ValueDisplayOn", "Exit"};
 
     private final double potentialPerScreen;
     private int selectedScreen;
 
     public OptionsScreen() {
-        groveBridge = Main.grove;
         potentialPerScreen = 1.0 / optionEntries.length;
     }
 
@@ -24,7 +20,7 @@ public class OptionsScreen implements Screen {
     @Override
     public void execute(ScreenController controller, Object monitor) {
         try {
-            int newSelected = (int) (groveBridge.getRotation() / potentialPerScreen);
+            int newSelected = (int) (ScreenController.getRotationFactor() / potentialPerScreen);
             if (newSelected >= optionEntries.length) {
                 newSelected = optionEntries.length - 1;
             } else if (newSelected < 0) {
@@ -37,10 +33,10 @@ public class OptionsScreen implements Screen {
 
                 switch (optionEntries[selectedScreen]) {
                     case "ValueDisplayOn":
-                        groveBridge.setLcdText("Display Aktiv\n"+ Config.ValueDisplayOn);
+                        ScreenController.setLcdText("Display Aktiv\n"+ Config.ValueDisplayOn);
                         break;
                     case "Exit":
-                        groveBridge.setLcdText("Speichern und Verlassen");
+                        ScreenController.setLcdText("Speichern und Verlassen");
                         break;
                 }
             }
@@ -55,7 +51,7 @@ public class OptionsScreen implements Screen {
             case "ValueDisplayOn":
                 Config.ValueDisplayOn = !Config.ValueDisplayOn;
                 if(Config.ValueDisplayOn) {
-                    groveBridge.setLcdColor(Config.getColorR(), Config.getColorG(), Config.getColorB());
+                    ScreenController.setLcdColor(Config.getColor());
                 }
                 break;
             case "Exit":

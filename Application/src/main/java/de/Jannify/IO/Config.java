@@ -1,5 +1,6 @@
 package de.Jannify.IO;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -45,22 +46,14 @@ public class Config {
     }
 
     public static int getTimeSync() {
-        return timeSync;
+        return timeSync * 1000;
     }
 
     public static int getTimeSave() {
-        return timeSave;
+        return timeSave * 1000;
     }
 
-    public static int getColorR() {
-        return colorR;
-    }
-
-    public static int getColorG() {
-        return colorG;
-    }
-
-    public static int getColorB() {
-        return colorB;
+    public static Color getColor() {
+        return new Color(colorR, colorG, colorB);
     }
 }

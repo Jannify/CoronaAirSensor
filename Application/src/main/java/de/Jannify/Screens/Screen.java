@@ -1,4 +1,4 @@
-package de.Jannify.Screen;
+package de.Jannify.Screens;
 
 public interface Screen {
     String getName();
