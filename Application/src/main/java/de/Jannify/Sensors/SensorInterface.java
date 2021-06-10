@@ -15,15 +15,18 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public class SensorInterface extends Thread implements Closeable {
+    // Interfaces/Devices
     private static GrovePi grovePi;
     private static NovaPMSensor novaPMSensor;
 
+    // Grove Devices
     private GroveDigitalIn button;
     private GroveRotarySensor potentiometer;
     private GroveTemperatureAndHumiditySensor tempSensor;
     private GroveRgbLcd lcd;
     private GroveGasSensor gasSensor;
 
+    //Current Sensor values
     private static double temperature;
     private static double humidity;
     private static int pm2;
@@ -33,15 +36,13 @@ public class SensorInterface extends Thread implements Closeable {
     public SensorInterface() {
         try {
             novaPMSensor = new NovaPMSensor();
+
             grovePi = new GrovePi4J();
             button = grovePi.getDigitalIn(7);
             potentiometer = new GroveRotarySensor(grovePi, 0);
             tempSensor = new GroveTemperatureAndHumiditySensor(grovePi, 8, GroveTemperatureAndHumiditySensor.Type.DHT11);
             lcd = grovePi.getLCD();
             gasSensor = grovePi.getGasSensor();
-
-            new Thread(button).start();
-            new Thread(potentiometer).start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -69,6 +70,9 @@ public class SensorInterface extends Thread implements Closeable {
     public void run() {
         while (!this.isInterrupted()) {
             try {
+                button.run();
+                potentiometer.run();
+
                 GroveTemperatureAndHumidityValue tempValue = tempSensor.get();
                 if (tempValue != null) {
                     temperature = tempValue.getTemperature();
@@ -85,7 +89,7 @@ public class SensorInterface extends Thread implements Closeable {
 
                 co2 = gasSensor.readAlgorithmResults()[0];
 
-                this.wait(1000);
+                this.wait(5000);
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
@@ -100,14 +104,6 @@ public class SensorInterface extends Thread implements Closeable {
         }
     }
 
-    public void setCO2Mode(int mode) {
-        try {
-            gasSensor.setMode(mode);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public void setLcdColor(Color color) {
         try {
             lcd.setRGB(color.getRed(), color.getGreen(), color.getBlue());
@@ -116,6 +112,16 @@ public class SensorInterface extends Thread implements Closeable {
         }
     }
 
+    public void setCO2Mode(int mode) {
+        try {
+            gasSensor.setMode(mode);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    //Listener register
     public void setButtonListener(@NotNull GroveDigitalInListener listener) {
         button.setListener(listener);
     }
@@ -124,6 +130,8 @@ public class SensorInterface extends Thread implements Closeable {
         potentiometer.setListener(listener);
     }
 
+
+    // GETTER
     public static double getTemperature() {
         return temperature;
     }

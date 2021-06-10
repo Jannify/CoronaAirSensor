@@ -41,7 +41,7 @@ public class SensorValueScreen implements Screen {
                 SensorValue sensorValue = sensorMeasuring.getCurrentValue();
                 switch (lcdPage) {
                     case 0:
-                        ScreenController.setLcdText(MessageFormat.format("Zeit: {0}\nCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
+                        ScreenController.setLcdText(MessageFormat.format("Zeit: {0}\neCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
                         break;
                     case 1:
                         ScreenController.setLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));

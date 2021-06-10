@@ -90,7 +90,7 @@ public class SensorMeasuring extends Thread {
 
         appendTextToFile(file, MessageFormat.format("{0};{1};{2};{3};{4};{5};{6}\n",
                 timeInSteps, decimalFormatter.format(average.temperature), decimalFormatter.format(average.humidity), average.PM2,
-                average.PM10, decimalFormatter.format(average.CO2 / 100.0), timeFormatter.format(LocalDateTime.now())));
+                average.PM10, average.CO2, timeFormatter.format(LocalDateTime.now())));
 
         valuesPerSave.clear();
     }
