@@ -83,7 +83,7 @@ public class SensorInterface extends Thread implements Closeable {
                     humidity = -1;
                 }
 
-                NovaPMValue pmValues = novaPMSensor.getValues();
+                NovaPMValue pmValues = novaPMSensor.fetchValue();
                 pm2 = pmValues.getPm2();
                 pm10 = pmValues.getPm10();
 
@@ -96,7 +96,7 @@ public class SensorInterface extends Thread implements Closeable {
         }
     }
 
-    public void setLcdText(String text) {
+    public void updateLcdText(String text) {
         try {
             lcd.setText(text);
         } catch (IOException ex) {
@@ -104,7 +104,7 @@ public class SensorInterface extends Thread implements Closeable {
         }
     }
 
-    public void setLcdColor(Color color) {
+    public void updateLcdColor(Color color) {
         try {
             lcd.setRGB(color.getRed(), color.getGreen(), color.getBlue());
         } catch (IOException ex) {
@@ -112,7 +112,7 @@ public class SensorInterface extends Thread implements Closeable {
         }
     }
 
-    public void setCO2Mode(int mode) {
+    public void updateCO2Mode(int mode) {
         try {
             gasSensor.setMode(mode);
         } catch (IOException ex) {
@@ -122,11 +122,11 @@ public class SensorInterface extends Thread implements Closeable {
 
 
     //Listener register
-    public void setButtonListener(@NotNull GroveDigitalInListener listener) {
+    public void registerButtonListener(@NotNull GroveDigitalInListener listener) {
         button.setListener(listener);
     }
 
-    public void setPotentiometerListener(@NotNull GroveInputDeviceListener<GroveRotaryValue> listener) {
+    public void registerPotentiometerListener(@NotNull GroveInputDeviceListener<GroveRotaryValue> listener) {
         potentiometer.setListener(listener);
     }
 

@@ -18,7 +18,7 @@ public class SelectorScreen implements Screen {
     }
 
     @Override
-    public void execute(ScreenController controller, Object monitor) {
+    public void execute(ScreenController controller) {
         int newSelected = (int) (ScreenController.getRotationFactor() / potentialPerScreen);
         if (newSelected > screenLength - 1) {
             newSelected = screenLength - 1;
@@ -34,11 +34,11 @@ public class SelectorScreen implements Screen {
                 text += "\n" + controller.screens[selectedScreen + 1].getName();
             }
 
-            ScreenController.setLcdText("->" + text);
+            ScreenController.updateLcdText("->" + text);
         }
 
         try {
-            monitor.wait(200);
+            controller.wait(200);
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }

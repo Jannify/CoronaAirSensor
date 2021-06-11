@@ -9,8 +9,6 @@ import org.iot.raspberry.grovepi.devices.GroveRotaryValue;
 import java.awt.*;
 
 public class ScreenController extends Thread implements GroveDigitalInListener, GroveInputDeviceListener<GroveRotaryValue> {
-    private final Object monitor = new Object();
-
     private static SensorInterface sensorInterface;
     public final Screen[] screens;
     private final Screen selector;
@@ -26,13 +24,13 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
 
     @Override
     public void run() {
-        sensorInterface.setButtonListener(this);
-        sensorInterface.setPotentiometerListener(this);
+        sensorInterface.registerButtonListener(this);
+        sensorInterface.registerPotentiometerListener(this);
 
         if (selectedScreen != null) {
             while (!Thread.currentThread().isInterrupted()) {
-                synchronized (monitor) {
-                    selectedScreen.execute(this, monitor);
+                synchronized (this) {
+                    selectedScreen.execute(this);
                 }
             }
         }
@@ -69,11 +67,11 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
         return rotationFactor;
     }
 
-    static void setLcdText(String text) {
-        sensorInterface.setLcdText(text);
+    static void updateLcdText(String text) {
+        sensorInterface.updateLcdText(text);
     }
 
     static void setLcdColor(Color color) {
-        sensorInterface.setLcdColor(color);
+        sensorInterface.updateLcdColor(color);
     }
 }

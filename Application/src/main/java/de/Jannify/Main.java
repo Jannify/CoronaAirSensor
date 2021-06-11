@@ -22,8 +22,8 @@ public class Main {
 
         sensorInterface = new SensorInterface();
         sensorInterface.start();
-        sensorInterface.setLcdColor(Config.getColor());
-        sensorInterface.setCO2Mode(GroveGasSensorPi4J.MODE_10S);
+        sensorInterface.updateLcdColor(Config.getColor());
+        sensorInterface.updateCO2Mode(GroveGasSensorPi4J.MODE_10S);
 
         sensorMeasuring = new SensorMeasuring();
         sensorMeasuring.start();

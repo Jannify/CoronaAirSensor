@@ -1,8 +1,9 @@
 package de.Jannify.Sensors.Nova;
 
 import com.fazecast.jSerialComm.SerialPort;
+import java.io.Closeable;
 
-public class NovaPMSensor {
+public class NovaPMSensor implements Closeable {
     private final SerialPort sensor;
 
     public NovaPMSensor() {
@@ -12,7 +13,7 @@ public class NovaPMSensor {
         sensor.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 10000, 0);
     }
 
-    public NovaPMValue getValues() {
+    public NovaPMValue fetchValue() {
         try {
             byte[] readBuffer = new byte[20];
             sensor.readBytes(readBuffer, readBuffer.length);

@@ -10,15 +10,15 @@ public class ExitScreen implements Screen {
     }
 
     @Override
-    public void execute(ScreenController controller, Object monitor) {
+    public void execute(ScreenController controller) {
         try {
-            Main.sensorInterface.setLcdText("Abbrechen? \n" + String.format("%.1f", time) + " Sekunden");
+            Main.sensorInterface.updateLcdText("Abbrechen? \n" + String.format("%.1f", time) + " Sekunden");
 
             if (time < 0) {
                 System.exit(202);
             }
             time -= 0.1;
-            monitor.wait(100);
+            controller.wait(100);
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }

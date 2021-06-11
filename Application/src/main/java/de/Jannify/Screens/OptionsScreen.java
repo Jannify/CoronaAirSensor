@@ -18,7 +18,7 @@ public class OptionsScreen implements Screen {
     }
 
     @Override
-    public void execute(ScreenController controller, Object monitor) {
+    public void execute(ScreenController controller) {
         try {
             int newSelected = (int) (ScreenController.getRotationFactor() / potentialPerScreen);
             if (newSelected >= optionEntries.length) {
@@ -33,14 +33,14 @@ public class OptionsScreen implements Screen {
 
                 switch (optionEntries[selectedScreen]) {
                     case "ValueDisplayOn":
-                        ScreenController.setLcdText("Display Aktiv\n"+ Config.ValueDisplayOn);
+                        ScreenController.updateLcdText("Display Aktiv\n"+ Config.ValueDisplayOn);
                         break;
                     case "Exit":
-                        ScreenController.setLcdText("Speichern und Verlassen");
+                        ScreenController.updateLcdText("Speichern und Verlassen");
                         break;
                 }
             }
-                monitor.wait(200);
+            controller.wait(200);
             } catch(InterruptedException ex){
                 Main.logger.severe(ex.getMessage());
             }

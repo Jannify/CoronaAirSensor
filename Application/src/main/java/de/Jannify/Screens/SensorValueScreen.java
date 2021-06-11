@@ -31,7 +31,7 @@ public class SensorValueScreen implements Screen {
     }
 
     @Override
-    public void execute(ScreenController controller, Object monitor) {
+    public void execute(ScreenController controller) {
         try {
             if (Config.ValueDisplayOn) {
                 if (firstTime) {
@@ -41,13 +41,13 @@ public class SensorValueScreen implements Screen {
                 SensorValue sensorValue = sensorMeasuring.getCurrentValue();
                 switch (lcdPage) {
                     case 0:
-                        ScreenController.setLcdText(MessageFormat.format("Zeit: {0}\neCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
+                        ScreenController.updateLcdText(MessageFormat.format("Zeit: {0}\neCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
                         break;
                     case 1:
-                        ScreenController.setLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));
+                        ScreenController.updateLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));
                         break;
                     case 2:
-                        ScreenController.setLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", sensorValue.PM2, sensorValue.PM10));
+                        ScreenController.updateLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", sensorValue.PM2, sensorValue.PM10));
                         break;
                     default:
                         lcdPage = -1;
@@ -55,12 +55,12 @@ public class SensorValueScreen implements Screen {
                 }
                 lcdPage++;
             } else if (firstTime) {
-                ScreenController.setLcdText("");
+                ScreenController.updateLcdText("");
                 ScreenController.setLcdColor(Color.BLACK);
             }
             firstTime = false;
 
-            monitor.wait(2000);
+            controller.wait(2000);
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }
