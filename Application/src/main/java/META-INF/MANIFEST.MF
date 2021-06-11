@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: de.Jannify.Main
+Class-Path: commons-io-2.8.0.jar pi4j-core-1.0.jar jSerialComm-2.7.0.jar
+  commons-codec-1.15.jar
+

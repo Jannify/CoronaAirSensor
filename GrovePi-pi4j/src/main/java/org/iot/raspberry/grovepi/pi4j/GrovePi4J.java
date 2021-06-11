@@ -23,7 +23,7 @@ public class GrovePi4J implements GrovePi {
   private final I2CBus bus;
   private final I2CDevice device;
 
-  public GrovePi4J() throws IOException {
+  public GrovePi4J() throws IOException, I2CFactory.UnsupportedBusNumberException {
     this.bus = I2CFactory.getInstance(I2CBus.BUS_1);
     this.device = bus.getDevice(GROVEPI_ADDRESS);
   }
@@ -53,13 +53,19 @@ public class GrovePi4J implements GrovePi {
 
   @Override
   public GroveRgbLcd getLCD() throws IOException {
-    return new GroveRgbLcdPi4J();
+    try {
+      return new GroveRgbLcdPi4J();
+    } catch (I2CFactory.UnsupportedBusNumberException e) {
+      e.printStackTrace();
+    }
+    return null;
+
   }
 
   public GroveGasSensor getGasSensor() throws IOException {
     try {
       return new GroveGasSensorPi4J();
-    } catch (InterruptedException e) {
+    } catch (InterruptedException | I2CFactory.UnsupportedBusNumberException e) {
       e.printStackTrace();
     }
     return null;

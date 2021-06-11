@@ -1,6 +1,5 @@
 package de.Jannify.Sensors;
 
-import com.sun.istack.internal.NotNull;
 import de.Jannify.Main;
 import de.Jannify.Sensors.Nova.NovaPMSensor;
 import de.Jannify.Sensors.Nova.NovaPMValue;
@@ -9,6 +8,7 @@ import org.iot.raspberry.grovepi.GroveDigitalInListener;
 import org.iot.raspberry.grovepi.GrovePi;
 import org.iot.raspberry.grovepi.devices.*;
 import org.iot.raspberry.grovepi.pi4j.GrovePi4J;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.Closeable;
@@ -68,30 +68,33 @@ public class SensorInterface extends Thread implements Closeable {
 
     @Override
     public void run() {
-        while (!this.isInterrupted()) {
-            try {
-                button.run();
-                potentiometer.run();
+        synchronized (this) {
+            while (!this.isInterrupted()) {
+                try {
+                    for (int i = 0; i < 25; i++) {
+                        button.run(); // Is waiting 100ms
+                        potentiometer.run(); // Is waiting 100ms
+                    }
+                    // Is executed every 5000ms
 
-                GroveTemperatureAndHumidityValue tempValue = tempSensor.get();
-                if (tempValue != null) {
-                    temperature = tempValue.getTemperature();
-                    humidity = tempValue.getHumidity();
-                    gasSensor.setEnvironmentalData(humidity, temperature);
-                } else {
-                    temperature = -1;
-                    humidity = -1;
+                    GroveTemperatureAndHumidityValue tempValue = tempSensor.get();
+                    if (tempValue != null) {
+                        temperature = tempValue.getTemperature();
+                        humidity = tempValue.getHumidity();
+                        gasSensor.setEnvironmentalData(humidity, temperature);
+                    } else {
+                        temperature = -1;
+                        humidity = -1;
+                    }
+
+                    NovaPMValue pmValues = novaPMSensor.fetchValue();
+                    pm2 = pmValues.getPM2();
+                    pm10 = pmValues.getPM10();
+
+                    co2 = gasSensor.readAlgorithmResults()[0];
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                NovaPMValue pmValues = novaPMSensor.fetchValue();
-                pm2 = pmValues.getPm2();
-                pm10 = pmValues.getPm10();
-
-                co2 = gasSensor.readAlgorithmResults()[0];
-
-                this.wait(5000);
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
             }
         }
     }

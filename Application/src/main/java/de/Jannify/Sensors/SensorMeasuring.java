@@ -35,8 +35,8 @@ public class SensorMeasuring extends Thread {
     @Override
     public void run() {
         startTime = LocalDateTime.now();
-        int timeSync = Config.getTimeSync();
-        int factorToSave = Config.getTimeSave() / Config.getTimeSync();
+        int timeSync = Config.getTimeSyncMili();
+        int factorToSave = Config.getTimeSaveMili() / Config.getTimeSyncMili();
 
         File file = new File(Config.getPath() + "/" + fileNameFormatter.format(LocalDateTime.now()) + ".csv");
         if (!file.exists()) {
@@ -72,9 +72,9 @@ public class SensorMeasuring extends Thread {
         currentValue = new SensorValue(
                 SensorInterface.getTemperature(),
                 SensorInterface.getHumidity(),
+                SensorInterface.getCO2(),
                 SensorInterface.getPM2(),
-                SensorInterface.getPM10(),
-                SensorInterface.getCO2());
+                SensorInterface.getPM10());
         valuesPerSave.add(currentValue);
     }
 
@@ -89,8 +89,8 @@ public class SensorMeasuring extends Thread {
         }
 
         appendTextToFile(file, MessageFormat.format("{0};{1};{2};{3};{4};{5};{6}\n",
-                timeInSteps, decimalFormatter.format(average.temperature), decimalFormatter.format(average.humidity), average.PM2,
-                average.PM10, average.CO2, timeFormatter.format(LocalDateTime.now())));
+                decimalFormatter.format(average.getTemperature()), decimalFormatter.format(average.getHumidity()), average.getCO2(), average.getPM2(), average.getPM10(),
+                timeFormatter.format(LocalDateTime.now()), timeInSteps));
 
         valuesPerSave.clear();
     }

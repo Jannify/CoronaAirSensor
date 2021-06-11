@@ -1,15 +1,14 @@
-package de.Jannify.Screens;
+package de.Jannify.Screen;
 
 import de.Jannify.Main;
 
 public class ExitScreen implements Screen {
     private double time = 3;
 
-    @Override public String getName() {
+    public String getName() {
         return "Herunterfahren";
     }
 
-    @Override
     public void execute(ScreenController controller) {
         try {
             Main.sensorInterface.updateLcdText("Abbrechen? \n" + String.format("%.1f", time) + " Sekunden");
@@ -17,15 +16,18 @@ public class ExitScreen implements Screen {
             if (time < 0) {
                 System.exit(202);
             }
-            time -= 0.1;
-            controller.wait(100);
+            time -= 0.2;
+            controller.wait(50); //plus 150 ms from setLcdText()
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }
     }
 
-    @Override public void buttonDown(ScreenController controller) {
-        time = 3;
+    public void buttonDown(ScreenController controller) {
         controller.openScreenSelector();
+    }
+
+    public void reset(ScreenController controller) {
+        time = 3;
     }
 }

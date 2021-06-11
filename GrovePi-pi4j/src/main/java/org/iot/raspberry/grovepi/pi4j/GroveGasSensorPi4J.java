@@ -42,7 +42,7 @@ public class GroveGasSensorPi4J extends GroveGasSensor {
     private final int mChipId;
     private int mMode;
 
-    public GroveGasSensorPi4J() throws IOException, InterruptedException {
+    public GroveGasSensorPi4J() throws IOException, InterruptedException, I2CFactory.UnsupportedBusNumberException {
         this.bus = I2CFactory.getInstance(I2CBus.BUS_1);
         this.device = bus.getDevice(DEFAULT_I2C_ADDRESS);
 

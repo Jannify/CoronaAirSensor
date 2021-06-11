@@ -1,4 +1,4 @@
-package de.Jannify.Screens;
+package de.Jannify.Screen;
 
 import de.Jannify.Main;
 
@@ -11,22 +11,19 @@ public class SelectorScreen implements Screen {
     public SelectorScreen(int screenLength) {
         this.screenLength = screenLength;
         potentialPerScreen = 1.0 / screenLength;
+        reset(null);
     }
 
-    @Override public String getName() {
+    public String getName() {
         return "Selector";
     }
 
-    @Override
     public void execute(ScreenController controller) {
-        int newSelected = (int) (ScreenController.getRotationFactor() / potentialPerScreen);
-        if (newSelected > screenLength - 1) {
-            newSelected = screenLength - 1;
-        } else if (newSelected < 0) {
-            newSelected = 0;
-        }
+        int newSelected = (int) (controller.getRotationFactor() / potentialPerScreen);
+        newSelected = Integer.min(newSelected, screenLength - 1);
+        newSelected = Integer.max(newSelected, 0);
 
-        if(selectedScreen != newSelected) {
+        if (selectedScreen != newSelected) {
             selectedScreen = newSelected;
 
             String text = controller.screens[selectedScreen].getName();
@@ -34,18 +31,21 @@ public class SelectorScreen implements Screen {
                 text += "\n" + controller.screens[selectedScreen + 1].getName();
             }
 
-            ScreenController.updateLcdText("->" + text);
+            controller.updateLcdText("->" + text);
         }
 
         try {
-            controller.wait(200);
+            controller.wait(100);
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }
     }
 
-    @Override public void buttonDown(ScreenController controller) {
+    public void buttonDown(ScreenController controller) {
         controller.openScreen(controller.screens[selectedScreen]);
+    }
+
+    public void reset(ScreenController controller) {
         selectedScreen = -1;
     }
 }

@@ -9,11 +9,11 @@ public class NovaPMValue {
         this.pm10 = pm10;
     }
 
-    public int getPm2() {
+    public int getPM2() {
         return pm2;
     }
 
-    public int getPm10() {
+    public int getPM10() {
         return pm10;
     }
 }

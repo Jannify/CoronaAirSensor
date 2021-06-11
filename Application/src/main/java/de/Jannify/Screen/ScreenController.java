@@ -1,4 +1,4 @@
-package de.Jannify.Screens;
+package de.Jannify.Screen;
 
 import de.Jannify.Main;
 import de.Jannify.Sensors.SensorInterface;
@@ -18,8 +18,8 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
 
     public ScreenController() {
         sensorInterface = Main.sensorInterface;
-        screens = new Screen[]{new SensorValueScreen(), new OptionsScreen(), new ExitScreen()};
-        selectedScreen = selector = new SelectorScreen(screens.length);
+        screens = new Screen[]{new SensorValueScreen(), new MonitoringScreen(), new OptionsScreen(), new ExitScreen(), new RestartScreen()};
+        selector = selectedScreen = new SelectorScreen(screens.length);
     }
 
     @Override
@@ -41,6 +41,7 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
     }
 
     public void openScreen(Screen screen) {
+        selectedScreen.reset(this);
         selectedScreen = screen;
         Main.logger.info("Opening: " + screen.getClass().getSimpleName());
     }
@@ -63,15 +64,15 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
         rotationFactor = newValue.getFactor();
     }
 
-    public static double getRotationFactor() {
+    double getRotationFactor() {
         return rotationFactor;
     }
 
-    static void updateLcdText(String text) {
+    void updateLcdText(String text) {
         sensorInterface.updateLcdText(text);
     }
 
-    static void setLcdColor(Color color) {
+    void updateLcdColor(Color color) {
         sensorInterface.updateLcdColor(color);
     }
 }

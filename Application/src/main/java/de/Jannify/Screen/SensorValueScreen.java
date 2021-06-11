@@ -1,4 +1,4 @@
-package de.Jannify.Screens;
+package de.Jannify.Screen;
 
 import de.Jannify.IO.Config;
 import de.Jannify.Main;
@@ -33,21 +33,21 @@ public class SensorValueScreen implements Screen {
     @Override
     public void execute(ScreenController controller) {
         try {
-            if (Config.ValueDisplayOn) {
+            if (Config.getDisplayOn()) {
                 if (firstTime) {
-                    ScreenController.setLcdColor(Config.getColor());
+                    controller.updateLcdColor(Config.getColor());
                 }
 
                 SensorValue sensorValue = sensorMeasuring.getCurrentValue();
                 switch (lcdPage) {
                     case 0:
-                        ScreenController.updateLcdText(MessageFormat.format("Zeit: {0}\neCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.CO2)));
+                        controller.updateLcdText(MessageFormat.format("Zeit: {0}\neCO2: {1}ppm", timeFormatter.format(LocalDateTime.now()), df.format(sensorValue.getCO2())));
                         break;
                     case 1:
-                        ScreenController.updateLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.temperature, sensorValue.humidity));
+                        controller.updateLcdText(MessageFormat.format("Temperatur: {0}C°\nLuftfeuchte: {1}%PM", sensorValue.getTemperature(), sensorValue.getHumidity()));
                         break;
                     case 2:
-                        ScreenController.updateLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", sensorValue.PM2, sensorValue.PM10));
+                        controller.updateLcdText(MessageFormat.format("PM  2: {0}μg/m3\nPM 10: {1}μg/m3", df.format(sensorValue.getPM2()), df.format(sensorValue.getPM10())));
                         break;
                     default:
                         lcdPage = -1;
@@ -55,20 +55,27 @@ public class SensorValueScreen implements Screen {
                 }
                 lcdPage++;
             } else if (firstTime) {
-                ScreenController.updateLcdText("");
-                ScreenController.setLcdColor(Color.BLACK);
+                controller.updateLcdText("");
+                controller.updateLcdColor(Color.BLACK);
             }
             firstTime = false;
 
-            controller.wait(2000);
+            controller.wait(1850); //plus 150 ms from setLcdText()
         } catch (InterruptedException ex) {
             Main.logger.severe(ex.getMessage());
         }
     }
 
     @Override public void buttonDown(ScreenController controller) {
+        controller.openScreenSelector();
+    }
+
+    public void reset(ScreenController controller) {
         lcdPage = 0;
         firstTime = true;
-        controller.openScreenSelector();
+
+        if (!Config.getDisplayOn()) {
+            controller.updateLcdColor(Config.getColor());
+        }
     }
 }

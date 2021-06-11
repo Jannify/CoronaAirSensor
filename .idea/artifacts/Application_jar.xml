@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact name="Application:jar">
+    <output-path>$PROJECT_DIR$/target/artifacts/Application_jar</output-path>
+    <root id="root">
+      <element id="archive" name="Application.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/Application/src/main/java/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="Application" />
+        <element id="module-output" name="GrovePi-spec" />
+        <element id="module-output" name="GrovePi-pi4j" />
+      </element>
+      <element id="library" level="project" name="Maven: commons-io:commons-io:2.8.0" />
+      <element id="library" level="project" name="Maven: com.pi4j:pi4j-core:1.0" />
+      <element id="library" level="project" name="Maven: com.fazecast:jSerialComm:2.7.0" />
+      <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.15" />
+    </root>
+  </artifact>
+</component>
