@@ -27,8 +27,8 @@ public class SensorInterface extends Thread implements Closeable {
     private GroveGasSensor gasSensor;
 
     //Current Sensor values
-    private static double temperature;
-    private static double humidity;
+    private static int temperature;
+    private static int humidity;
     private static int pm2;
     private static int pm10;
     private static int co2;
@@ -79,8 +79,8 @@ public class SensorInterface extends Thread implements Closeable {
 
                     GroveTemperatureAndHumidityValue tempValue = tempSensor.get();
                     if (tempValue != null) {
-                        temperature = tempValue.getTemperature();
-                        humidity = tempValue.getHumidity();
+                        temperature = (int) tempValue.getTemperature();
+                        humidity = (int) tempValue.getHumidity();
                         gasSensor.setEnvironmentalData(humidity, temperature);
                     } else {
                         temperature = -1;
@@ -135,11 +135,11 @@ public class SensorInterface extends Thread implements Closeable {
 
 
     // GETTER
-    public static double getTemperature() {
+    public static int getTemperature() {
         return temperature;
     }
 
-    public static double getHumidity() {
+    public static int getHumidity() {
         return humidity;
     }
 

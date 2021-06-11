@@ -5,25 +5,25 @@ import de.Jannify.IO.Config;
 import java.util.List;
 
 public class SensorValue {
-    private final double temperature;
-    private final double humidity;
+    private final int temperature;
+    private final int humidity;
     private final int co2;
     private final int pm2;
     private final int pm10;
 
-    public SensorValue(double temperature, double humidity, int co2, int pm2, int pm10) {
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.co2 = Math.max(co2, 399);
-        this.pm2 = Math.min(pm2, 1000);
-        this.pm10 = Math.min(pm10, 1000);
+    public SensorValue(int temperature, int humidity, int co2, int pm2, int pm10) {
+        this.temperature = Math.min(Math.max(temperature, 0), 50);
+        this.humidity = Math.min(Math.max(humidity, 20), 90);
+        this.co2 = Math.min(Math.max(co2, 399), 29300); //It goes from 400 to 29206, these values are just to see it's corrupted and not just low.
+        this.pm2 = Math.min(Math.max(pm2, 0), 1000);
+        this.pm10 = Math.min(Math.max(pm10, 0), 1000);
     }
 
     public SensorValue() {
         this(0, 0, 0, 0, 0);
     }
 
-    public double get(int index) {
+    public int get(int index) {
         switch (index) {
             case 0:
                 return temperature;
@@ -42,8 +42,8 @@ public class SensorValue {
 
     public static SensorValue getAverage(List<SensorValue> sensorValues) {
         return new SensorValue(
-                sensorValues.stream().mapToDouble(d -> d.temperature).average().orElse(Double.NaN),
-                sensorValues.stream().mapToDouble(d -> d.humidity).average().orElse(Double.NaN),
+                (int) sensorValues.stream().mapToInt(d -> d.temperature).average().orElse(Double.NaN),
+                (int) sensorValues.stream().mapToInt(d -> d.humidity).average().orElse(Double.NaN),
                 (int) sensorValues.stream().mapToInt(d -> d.co2).average().orElse(Double.NaN),
                 (int) sensorValues.stream().mapToInt(d -> d.pm2).average().orElse(Double.NaN),
                 (int) sensorValues.stream().mapToInt(d -> d.pm10).average().orElse(Double.NaN));
