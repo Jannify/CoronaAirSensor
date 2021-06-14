@@ -42,6 +42,9 @@ public class SelectorScreen implements Screen {
     }
 
     public void buttonDown(ScreenController controller) {
+        if(selectedScreen < 0 || selectedScreen >= screenLength) {
+            selectedScreen = 0;
+        }
         controller.openScreen(controller.screens[selectedScreen]);
     }
 

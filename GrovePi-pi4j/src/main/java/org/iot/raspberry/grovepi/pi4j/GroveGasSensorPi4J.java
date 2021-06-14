@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//Translated from C++ to Java: https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library/blob/master/src/SparkFunCCS811.cpp
 public class GroveGasSensorPi4J extends GroveGasSensor {
     public static final int CHIP_ID_CCS811 = 0x81;
     public static final int DEFAULT_I2C_ADDRESS = 0x5A;

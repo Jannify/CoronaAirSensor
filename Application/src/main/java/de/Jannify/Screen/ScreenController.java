@@ -61,7 +61,7 @@ public class ScreenController extends Thread implements GroveDigitalInListener, 
      */
     @Override
     public void onChange(GroveRotaryValue newValue) {
-        rotationFactor = newValue.getFactor();
+        rotationFactor = Math.abs(newValue.getFactor() -1);
     }
 
     double getRotationFactor() {

@@ -3,6 +3,7 @@
 
 # Custom
 Drafts/*
+**/target/**
 
 # Compiled class file
 *.class

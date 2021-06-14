@@ -43,6 +43,7 @@ public class SensorMeasuring extends Thread {
             try {
                 //noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
+                appendTextToFile(file, "Temperatur in °C;Luftfeuchtigkeit in %;eCO2 in bp;PM2 in μg/m³;PM10 in μg/m³ \n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -55,8 +56,7 @@ public class SensorMeasuring extends Thread {
 
                     try {
                         this.wait(timeSync);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (InterruptedException ignored) {
                     }
                 }
                 saveData(file);
@@ -89,7 +89,8 @@ public class SensorMeasuring extends Thread {
         }
 
         appendTextToFile(file, MessageFormat.format("{0};{1};{2};{3};{4};{5};{6}\n",
-                decimalFormatter.format(average.getTemperature()), decimalFormatter.format(average.getHumidity()), average.getCO2(), average.getPM2(), average.getPM10(),
+                decimalFormatter.format(average.getTemperature()), decimalFormatter.format(average.getHumidity()),
+                decimalFormatter.format(average.getCO2()/100.0), average.getPM2(), average.getPM10(),
                 timeFormatter.format(LocalDateTime.now()), timeInSteps));
 
         valuesPerSave.clear();
